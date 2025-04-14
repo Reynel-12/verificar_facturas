@@ -124,10 +124,10 @@ class _ExpiredInvoiceScreenState extends State<ExpiredInvoiceScreen>
     final iconSize = isSmallScreen ? 60.0 : 80.0;
     final circleSize = isSmallScreen ? 120.0 : 160.0;
 
-    if (_verificando) {
-      return VerifyingDataScreen();
-    } else if (descargada) {
+    if (descargada) {
       return InvoiceDownloadedScreen();
+    } else if (_verificando) {
+      return VerifyingDataScreen();
     }
 
     return Scaffold(
