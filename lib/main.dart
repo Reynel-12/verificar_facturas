@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:html' as html;
 import 'package:http/http.dart' as http;
+import 'package:notificacion_factura/confirmar_descarga.dart';
 import 'package:notificacion_factura/loading.dart';
 
 void main() {
@@ -47,6 +48,7 @@ class _ExpiredInvoiceScreenState extends State<ExpiredInvoiceScreen>
   late AnimationController _clockController;
   late Animation<double> _clockRotationAnimation;
   bool _verificando = true;
+  bool descargada = false;
 
   @override
   void initState() {
@@ -72,10 +74,10 @@ class _ExpiredInvoiceScreenState extends State<ExpiredInvoiceScreen>
   }
 
   Future<void> _verificarFactura() async {
-    final uri = Uri.base;
-    final fileUrl = uri.queryParameters['url'];
+    final encoded = Uri.base.queryParameters['url'];
+    final fileUrl = Uri.decodeComponent(encoded ?? '');
 
-    if (fileUrl == null || fileUrl.isEmpty) {
+    if (fileUrl.isEmpty) {
       setState(() => _verificando = false);
       return;
     }
@@ -85,6 +87,7 @@ class _ExpiredInvoiceScreenState extends State<ExpiredInvoiceScreen>
 
       if (response.statusCode == 200) {
         html.window.location.href = fileUrl; // ✅ Redirige si existe
+        setState(() => descargada = true);
       } else {
         print('❌ Código de estado: ${response.statusCode}');
         setState(() => _verificando = false);
@@ -122,6 +125,8 @@ class _ExpiredInvoiceScreenState extends State<ExpiredInvoiceScreen>
 
     if (_verificando) {
       return VerifyingDataScreen();
+    } else if (descargada) {
+      return InvoiceDownloadedScreen();
     }
 
     return Scaffold(
