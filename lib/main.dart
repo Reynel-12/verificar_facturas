@@ -87,6 +87,7 @@ class _ExpiredInvoiceScreenState extends State<ExpiredInvoiceScreen>
 
       if (response.statusCode == 200) {
         html.window.location.href = fileUrl; // ✅ Redirige si existe
+        setState(() => _verificando = false);
         setState(() => descargada = true);
       } else {
         print('❌ Código de estado: ${response.statusCode}');
